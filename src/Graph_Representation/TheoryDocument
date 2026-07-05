@@ -1,0 +1,39 @@
+************************************* Comparison **********************************
+BFS	                                    DFS
+Queue	                                Recursion / Stack
+Level-wise traversal	                Goes as deep as possible
+FIFO	                                LIFO
+Shortest path in unweighted graph	    Topological sort, cycle detection, connected components,
+                                        bridges, articulation points
+
+
+
+*********************** One suggestion for your learning journey **********************************
+
+Since you're preparing for interviews,
+keep BFS and DFS implementations separate instead of trying to reuse one structure:
+
+BFS template: Queue + while(queue not empty)
+DFS recursive template: recursive function
+DFS iterative template: Stack + while(stack not empty)
+
+
+
+
+*********************** DFS **********************************
+
+ * DFS is a traversal technique which involves the idea of recursion and backtracking.
+ * DFS goes in-depth, i.e., traverses all nodes by going ahead,
+ * and when there are no further nodes to traverse in the current path,
+ * then it backtracks on the same path and traverses other unvisited nodes.
+ *
+ * Imagine navigating through a maze where you follow one path as deep as it goes,
+ * and when you can’t proceed further, you backtrack to the last junction and try a different route.
+ *
+ *
+ * Start from a chosen node and mark it as visited, storing it in the traversal list.
+ * Look at all the neighbors of the current node using the adjacency list.
+ * For each neighbor, if it is not visited, recursively apply DFS on that neighbor.
+ * This process continues, going deeper into one path until no unvisited nodes remain.
+ * Once a path is fully explored, backtrack to explore the remaining neighbors.
+ * Repeat until all nodes in the graph have been visited.
