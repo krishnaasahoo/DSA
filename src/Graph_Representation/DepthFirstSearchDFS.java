@@ -4,78 +4,111 @@ import java.util.*;
 
 
 /**
-
  *
- *
- * Depth First Search (DFS)
- *
- *
- * 6
- *
- * Problem Statement: Given an undirected graph, return a vector of all nodes by traversing the graph using depth-first search (DFS).
+ * Problem Statement: Given an undirected graph, return a vector of all nodes by traversing
+ * the graph using depth-first search (DFS).
  *
  * Examples
  *
  */
 public class DepthFirstSearchDFS {
 
-    public static void main(String[]args) {
+    public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Enter number of vertices : ");
+        System.out.print("Enter number of vertices: ");
         int V = sc.nextInt();
 
-        System.out.println("Enter number of edges : ");
+        System.out.print("Enter number of edges: ");
         int E = sc.nextInt();
 
-        System.out.println("Enter edges from and to : ");
-        int[][]edges = new int[E][2];
-        for(int i=0 ; i<E ; i++){
-            edges[i][0]=sc.nextInt();
-            edges[i][1]=sc.nextInt();
-        }
-
-        List<Integer> dfsPrint = new ArrayList<>();
-        boolean [] visited = new boolean[V];
-
-        //prepared adjacent List
+        // Prepare adjacency list
         List<List<Integer>> adjList = new ArrayList<>();
-        for(int i=0 ; i<V ; i++){
+        for (int i = 0; i < V; i++) {
             adjList.add(new ArrayList<>());
         }
-        for(int[]e:edges){
-            adjList.get(e[0]).add(e[1]);
-            adjList.get(e[1]).add(e[0]);
+
+        System.out.println("Enter edges (from to):");
+        for (int i = 0; i < E; i++) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+
+            // Undirected Graph
+            adjList.get(u).add(v);
+            adjList.get(v).add(u);
         }
 
-        dfsWithQueue(V, adjList, dfsPrint, visited);
+        // ---------------- Recursive DFS ----------------
+        boolean[] visitedRec = new boolean[V];
+        List<Integer> dfsRec = new ArrayList<>();
 
-        for(int i : dfsPrint){
-            System.out.print(i + " ");
+        for (int i = 0; i < V; i++) {
+            if (!visitedRec[i]) {
+                dfsWithRecursion(i, adjList, visitedRec, dfsRec);
+            }
         }
 
+        System.out.println("\nRecursive DFS:");
+        System.out.println(dfsRec);
+
+        // ---------------- Stack DFS ----------------
+        boolean[] visitedStack = new boolean[V];
+        List<Integer> dfsStack = new ArrayList<>();
+
+        for (int i = 0; i < V; i++) {
+            if (!visitedStack[i]) {
+                dfsWithStack(i, adjList, visitedStack, dfsStack);
+            }
+        }
+
+        System.out.println("Iterative DFS:");
+        System.out.println(dfsStack);
     }
 
-    private static void dfsWithQueue(int V, List<List<Integer>> adjList, List<Integer> dfsPrint, boolean [] visited){
-        for(int i=0 ; i<V ; i++){
-            if(!visited[i]){
+    // Recursive DFS
+    private static void dfsWithRecursion(int node, List<List<Integer>> adjList, boolean[] visited, List<Integer> result) {
 
-                Queue<Integer> q = new LinkedList<>();
-                visited[i]=true;
-                dfsPrint.add(i);
-                q.add(i);
-                while(!q.isEmpty()){
-                    int curr = q.poll();
-                    for(int j : adjList.get(curr)){
-                        if(!visited[j]){
-                            visited[j]=true;
-                            dfsPrint.add(j);
-                            q.add(j);
-                        }
+        visited[node] = true;
+        result.add(node);
+
+        for (int neighbour : adjList.get(node)) {
+            if (!visited[neighbour]) {
+                dfsWithRecursion(neighbour, adjList, visited, result);
+            }
+        }
+    }
+
+    // Iterative DFS using Stack
+    private static void dfsWithStack(int start, List<List<Integer>> adjList, boolean[] visited, List<Integer> result) {
+
+        Stack<Integer> stack = new Stack<>();
+        stack.push(start);
+
+        while (!stack.isEmpty()) {
+
+            int node = stack.pop();
+
+            if (!visited[node]) {
+
+                visited[node] = true;
+                result.add(node);
+
+                // Reverse traversal so output matches recursive DFS
+                List<Integer> neighbours = adjList.get(node);
+
+                for (int i = neighbours.size() - 1; i >= 0; i--) {
+
+                    int neighbour = neighbours.get(i);
+
+                    if (!visited[neighbour]) {
+                        stack.push(neighbour);
                     }
                 }
             }
         }
     }
 }
+
+//Time Complexity: O(V+E), each vertex is visited once and every edge is checked once in the adjacency list.
+//Space Complexity: O(V) , additional amount of space required for recursion stack.
